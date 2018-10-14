@@ -1,0 +1,3 @@
+0:0:0:0:0:0:0:1 - - [12/Oct/2018:10:25:23 -0500] "GET /Shopping HTTP/1.1" 302 - http-bio-9000-exec-1 0
+0:0:0:0:0:0:0:1 - - [12/Oct/2018:10:25:23 -0500] "GET /Shopping/ HTTP/1.1" 200 52 http-bio-9000-exec-3 549
+0:0:0:0:0:0:0:1 - - [12/Oct/2018:10:25:24 -0500] "GET /favicon.ico HTTP/1.1" 404 - http-bio-9000-exec-4 0
