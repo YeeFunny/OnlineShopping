@@ -1,105 +1,53 @@
 package com.dto;
 
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Address {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ADDRESS_ID")
 	private Integer addressId;
-	private Integer userId;
+	@Column(name = "FULL_NAME", nullable = false)
 	private String fullName;
+	@Column(name = "STREET", nullable = false)
 	private String street;
+	@Column(name = "STREETTWO")
 	private String streetTwo;
+	@Column(name = "CITY", nullable = false)
 	private String city;
+	@Column(name = "STATE", nullable = false)
 	private String state;
+	@Column(name = "ZIP", nullable = false)
 	private String zip;
+	@Column(name = "COUNTRY", nullable = false)
 	private String country;
-	private String phone;
-	private Integer status;
-
-	public Integer getAddressId() {
-		return addressId;
-	}
-
-	public void setAddressId(Integer addressId) {
-		this.addressId = addressId;
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
-	public String getStreetTwo() {
-		return streetTwo;
-	}
-
-	public void setStreetTwo(String streetTwo) {
-		this.streetTwo = streetTwo;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getZip() {
-		return zip;
-	}
-
-	public void setZip(String zip) {
-		this.zip = zip;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+	@ManyToMany
+	@JoinTable(name = "USER_ADDRESS", joinColumns = { @JoinColumn(name = "ADDRESS_ID") }, inverseJoinColumns = {
+			@JoinColumn(name = "USER_ID") })
+	private List<User> users;
 
 }

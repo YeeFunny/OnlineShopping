@@ -1,44 +1,40 @@
 package com.dto;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity(name = "product")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Product {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "PRODUCT_ID")
 	private Integer productId;
+	@Column(name = "PRODUCT_NAME")
 	private String productName;
-	private Integer categoryId;
-	private List<Specifics> specificsList;
-
-	public Integer getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-	public Integer getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public List<Specifics> getSpecificsList() {
-		return specificsList;
-	}
-
-	public void setSpecificsList(List<Specifics> specificsList) {
-		this.specificsList = specificsList;
-	}
+	private String brand;
+	private Float price;
+	private Integer stock;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "CATEGORY_ID", nullable = false)
+	private Category category;
 
 }

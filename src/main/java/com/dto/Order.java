@@ -1,101 +1,58 @@
 package com.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.sql.Date;
 import java.util.Map;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyClass;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity(name = "order")
+@Table(name = "SHOPPING_ORDER")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class Order {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ORDER_ID")
 	private Integer orderId;
-	private Integer userId;
-	private Integer addressId;
-	private Integer cardId;
-	private Integer productNum;
-	private Map<Product, List<Sku>> productList;
-	private LocalDateTime orderTime;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User user;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "ADDRESS_ID", nullable = false)
+	private Address address;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "CARD_ID", nullable = false)
+	private Card card;
+//	@ElementCollection
+	@ManyToMany
+//	@MapKeyClass(value = Product.class)
+	private Map<Product, Integer> productList;
+	@Column(name = "ORDER_TIME")
+	private Date orderTime;
 	private Integer amount;
-	private LocalDate expectedDelivery;
+	private Date expectedDelivery;
 	private Integer status;
-
-	public Integer getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(Integer orderId) {
-		this.orderId = orderId;
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public Integer getAddressId() {
-		return addressId;
-	}
-
-	public void setAddressId(Integer addressId) {
-		this.addressId = addressId;
-	}
-
-	public Integer getCardId() {
-		return cardId;
-	}
-
-	public void setCardId(Integer cardId) {
-		this.cardId = cardId;
-	}
-
-	public Integer getProductNum() {
-		return productNum;
-	}
-
-	public void setProductNum(Integer productNum) {
-		this.productNum = productNum;
-	}
-
-	public Map<Product, List<Sku>> getProductList() {
-		return productList;
-	}
-
-	public void setProductList(Map<Product, List<Sku>> productList) {
-		this.productList = productList;
-	}
-
-	public LocalDateTime getOrderTime() {
-		return orderTime;
-	}
-
-	public void setOrderTime(LocalDateTime orderTime) {
-		this.orderTime = orderTime;
-	}
-
-	public Integer getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Integer amount) {
-		this.amount = amount;
-	}
-
-	public LocalDate getExpectedDelivery() {
-		return expectedDelivery;
-	}
-
-	public void setExpectedDelivery(LocalDate expectedDelivery) {
-		this.expectedDelivery = expectedDelivery;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 
 }

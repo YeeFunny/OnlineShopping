@@ -1,15 +1,40 @@
 package com.dto;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "CARD")
 public class Card {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "CARD_ID")
 	private Integer cardId;
-	private Integer userId;
+	@Column(name = "FULL_NAME", nullable = false)
 	private String fullName;
+	@Column(name = "CARD_NUM", nullable = false, unique = true)
 	private Integer cardNum;
-	private LocalDate expiration;
-	private Integer status;
+	@Column(name = "EXPIRATION", nullable = false)
+	private Date expiration;
+
+	public Card() {
+		super();
+	}
+
+	public Card(Integer cardId, String fullName, Integer cardNum, Date expiration) {
+		super();
+		this.cardId = cardId;
+		this.fullName = fullName;
+		this.cardNum = cardNum;
+		this.expiration = expiration;
+	}
 
 	public Integer getCardId() {
 		return cardId;
@@ -17,14 +42,6 @@ public class Card {
 
 	public void setCardId(Integer cardId) {
 		this.cardId = cardId;
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 
 	public String getFullName() {
@@ -43,20 +60,12 @@ public class Card {
 		this.cardNum = cardNum;
 	}
 
-	public LocalDate getExpiration() {
+	public Date getExpiration() {
 		return expiration;
 	}
 
-	public void setExpiration(LocalDate expiration) {
+	public void setExpiration(Date expiration) {
 		this.expiration = expiration;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 
 }

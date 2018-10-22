@@ -1,60 +1,42 @@
 package com.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Table(name = "CARTITEM")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class CartItem {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "CARTITEM_ID")
 	private Integer cartItemId;
-	private Integer userId;
-	private Integer productId;
-	private String productName;
-	private Integer skuId;
-	private Integer number;
-
-	public Integer getCartItemId() {
-		return cartItemId;
-	}
-
-	public void setCartItemId(Integer cartItemId) {
-		this.cartItemId = cartItemId;
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public Integer getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-	public Integer getSkuId() {
-		return skuId;
-	}
-
-	public void setSkuId(Integer skuId) {
-		this.skuId = skuId;
-	}
-
-	public Integer getNumber() {
-		return number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "USER_ID")
+	private User user;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "PRODUCT_ID")
+	private Product product;
+	@Column(name = "AMOUNT", nullable = false)
+	private Integer amount;
 
 }
