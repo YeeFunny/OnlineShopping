@@ -1,5 +1,6 @@
 package com.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -11,18 +12,23 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dto.Card;
 import com.dto.User;
 import com.exception.DatabaseException;
 
 @Repository
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = DatabaseException.class)
 public class CardRepositoryImpl implements CardRepository{
 	
 	@Autowired
 	SessionFactory sessionFactory;
 
 	@Override
+	@Transactional(readOnly = true, isolation = Isolation.SERIALIZABLE)
 	public Card getCardById(int cardId) {
 		Session session = sessionFactory.openSession();
 		CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -35,14 +41,16 @@ public class CardRepositoryImpl implements CardRepository{
 	}
 
 	@Override
+	@Transactional(readOnly = true, isolation = Isolation.SERIALIZABLE)
 	public List<Card> getCardsByUser(User user) {
 		Session session = sessionFactory.openSession();
-		CriteriaBuilder cb = session.getCriteriaBuilder();
-		CriteriaQuery<Card> cq = cb.createQuery(Card.class);
-		Root<Card> root = cq.from(Card.class);
-		cq.where(cb.equal(root.get("user"), user));
-		List<Card> cards = session.createQuery(cq).list();
-		session.close();
+		List<Card> cards = new ArrayList<>();
+		try {
+			user = session.load(User.class, user.getUserId());
+			cards = user.getCards();
+		} finally {
+			session.close();
+		}
 		return cards;
 	}
 
@@ -62,13 +70,14 @@ public class CardRepositoryImpl implements CardRepository{
 	@Override
 	public int updateCard(Card card) throws DatabaseException {
 		Session session = sessionFactory.openSession();
-		String hql = "update card set fullName = :fullName, cardNum = :cardNum, expiration = :expiration" 
-				+ "where cardId = :cardId";
+		String hql = "update Card set cardName = :cardName, cardNum = :cardNum, expiration = :expiration" 
+				+ ", cvv = :cvv where cardId = :cardId";
 		Transaction transaction = session.beginTransaction();
 		int row = session.createQuery(hql)
-				.setParameter("fullName", card.getFullName())
+				.setParameter("cardName", card.getCardName())
 				.setParameter("cardNum", card.getCardNum())
 				.setParameter("expiration", card.getExpiration())
+				.setParameter("cvv", card.getCvv())
 				.setParameter("cardId", card.getCardId())
 				.executeUpdate();
 		transaction.commit();
@@ -82,7 +91,7 @@ public class CardRepositoryImpl implements CardRepository{
 	@Override
 	public int deleteCardById(int cardId) throws DatabaseException {
 		Session session = sessionFactory.openSession();
-		String hql = "delete from card where cardId = :cardId";
+		String hql = "delete from Card where cardId = :cardId";
 		Transaction transaction = session.beginTransaction();
 		int row = session.createQuery(hql)
 				.setParameter("cardId", cardId)

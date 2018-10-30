@@ -8,7 +8,7 @@ import com.exception.DatabaseException;
 
 public interface AddressRepository {
 	
-	public Address getAddressById(int addressId);
+	public Address getAddressById(int addressId) throws DatabaseException;
 
 	public List<Address> getAddressByUser(User user);
 	

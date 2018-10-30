@@ -1,29 +1,26 @@
 package com.config;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.sql.DataSource;
 
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import com.dto.Address;
-import com.dto.Card;
-import com.dto.CartItem;
-import com.dto.Category;
-import com.dto.Login;
-import com.dto.Order;
-import com.dto.Product;
-import com.dto.Search;
-import com.dto.User;
 
 @Configuration
 @EnableWebMvc
+@EnableTransactionManagement(proxyTargetClass=false)
 public class DatabasePropertyConfig {
 
 	@Value("${jdbc.url}")
@@ -97,10 +94,21 @@ public class DatabasePropertyConfig {
 		this.show_url = show_url;
 	}
 
-	@Bean("dataSource")
+//	@Bean("dataSource")
+//	@DependsOn("dbProperty")
+//	public DataSource getDataSource() {
+//		BasicDataSource ds = new BasicDataSource();
+//		ds.setUrl(getUrl());
+//		ds.setPassword(getPassword());
+//		ds.setUsername(getUsername());
+//		ds.setDriverClassName(getDriverName());
+//		return ds;
+//	}
+
+	@Bean
 	@DependsOn("dbProperty")
 	public DataSource getDataSource() {
-		BasicDataSource ds = new BasicDataSource();
+		DriverManagerDataSource ds = new DriverManagerDataSource();
 		ds.setUrl(getUrl());
 		ds.setPassword(getPassword());
 		ds.setUsername(getUsername());
@@ -108,24 +116,57 @@ public class DatabasePropertyConfig {
 		return ds;
 	}
 
-	@Bean
-	@DependsOn("dbProperty")
-	public SessionFactory getSessionFactory() {
-		SessionFactory sf;
-		org.hibernate.cfg.Configuration cfg = new org.hibernate.cfg.Configuration().addPackage("com.dto");
-		cfg.addAnnotatedClass(Address.class).addAnnotatedClass(Card.class).addAnnotatedClass(User.class)
-			.addAnnotatedClass(CartItem.class).addAnnotatedClass(Category.class).addAnnotatedClass(Login.class)
-			.addAnnotatedClass(Order.class).addAnnotatedClass(Product.class).addAnnotatedClass(Search.class);
-		cfg.setProperty(Environment.HBM2DDL_AUTO, getHbm2ddl());
-		cfg.setProperty(Environment.DIALECT, getDialect());
-		cfg.setProperty("hibernate.connection.username", getUsername());
-		cfg.setProperty("hibernate.connection.password", getPassword());
-		cfg.setProperty("hibernate.connection.driver_class", getDriverName());
-		cfg.setProperty("hibernate.connection.url", getUrl());
-		cfg.setProperty(Environment.SHOW_SQL, getShow_url());
+//	@Bean
+//	@DependsOn("dbProperty")
+//	public SessionFactory getSessionFactory() {
+//		SessionFactory sf;
+//		org.hibernate.cfg.Configuration cfg = new org.hibernate.cfg.Configuration().addPackage("com.dto");
+//		cfg.addAnnotatedClass(Address.class).addAnnotatedClass(Card.class).addAnnotatedClass(User.class)
+//				.addAnnotatedClass(CartItem.class).addAnnotatedClass(Category.class).addAnnotatedClass(Login.class)
+//				.addAnnotatedClass(Order.class).addAnnotatedClass(Product.class).addAnnotatedClass(Search.class);
+//		cfg.setProperty(Environment.HBM2DDL_AUTO, getHbm2ddl());
+//		cfg.setProperty(Environment.DIALECT, getDialect());
+//		cfg.setProperty("hibernate.connection.username", getUsername());
+//		cfg.setProperty("hibernate.connection.password", getPassword());
+//		cfg.setProperty("hibernate.connection.driver_class", getDriverName());
+//		cfg.setProperty("hibernate.connection.url", getUrl());
+//		cfg.setProperty(Environment.SHOW_SQL, getShow_url());
+//
+//		StandardServiceRegistryBuilder rb = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties());
+//		sf = cfg.buildSessionFactory(rb.build());
+//		return sf;
+//	}
 
-		StandardServiceRegistryBuilder rb = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties());
-		sf = cfg.buildSessionFactory(rb.build());
-		return sf;
+	@Bean
+	public Properties getProperties() {
+		Properties properties = new Properties();
+		properties.put(Environment.SHOW_SQL, getShow_url());
+		properties.put(Environment.HBM2DDL_AUTO, getHbm2ddl());
+		properties.put(Environment.DIALECT, getDialect());
+		return properties;
+	}
+
+	@Bean("getSessionFactory")
+	public SessionFactory getSessionFactory() throws IOException {
+		LocalSessionFactoryBean bean = new LocalSessionFactoryBean();
+		bean.setDataSource(getDataSource());
+		bean.setHibernateProperties(getProperties());
+		bean.setPackagesToScan("com.dto");
+		bean.afterPropertiesSet();
+		return bean.getObject();
+	}
+	
+	@Bean
+	public HibernateTemplate template() throws IOException {
+		HibernateTemplate template= new HibernateTemplate();
+		template.setSessionFactory(getSessionFactory());
+		return template;
+	}
+	
+	@Bean("transactionManager")
+	public HibernateTransactionManager getTransactionManager() throws IOException {
+		HibernateTransactionManager htm = new HibernateTransactionManager();
+		htm.setSessionFactory(getSessionFactory());
+		return htm;
 	}
 }

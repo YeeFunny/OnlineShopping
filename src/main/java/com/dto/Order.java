@@ -6,13 +6,14 @@ import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +23,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "order")
 @Table(name = "SHOPPING_ORDER")
 @Getter
 @Setter
@@ -30,6 +30,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@Entity(name = "order")
 public class Order {
 
 	@Id
@@ -45,14 +46,28 @@ public class Order {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "CARD_ID", nullable = false)
 	private Card card;
-//	@ElementCollection
-	@ManyToMany
+	@ElementCollection(fetch = FetchType.EAGER)
+//	@MapKeyJoinColumn(name = "ORDER_ID")
+//	@MapKeyColumn(name = "PRODUCT_ID")
 //	@MapKeyClass(value = Product.class)
-	private Map<Product, Integer> productList;
+//	@Column(name = "QUANTITY", columnDefinition = "INTEGER")
+	private Map<Product, Integer> products;
 	@Column(name = "ORDER_TIME")
 	private Date orderTime;
 	private Integer amount;
-	private Date expectedDelivery;
-	private Integer status;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus status;
+
+	public Order(User user, Address address, Card card, Map<Product, Integer> products, Date orderTime, Integer amount,
+			OrderStatus status) {
+		super();
+		this.user = user;
+		this.address = address;
+		this.card = card;
+		this.products = products;
+		this.orderTime = orderTime;
+		this.amount = amount;
+		this.status = status;
+	}
 
 }

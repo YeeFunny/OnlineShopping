@@ -1,4 +1,0 @@
-0:0:0:0:0:0:0:1 - - [17/Oct/2018:22:53:08 -0500] "GET /OnlineShopping/login.jsp HTTP/1.1" 404 - http-bio-9000-exec-1 0
-0:0:0:0:0:0:0:1 - - [17/Oct/2018:22:53:17 -0500] "GET /Shopping/login.jsp HTTP/1.1" 200 1551 http-bio-9000-exec-3 529
-0:0:0:0:0:0:0:1 - - [17/Oct/2018:22:53:17 -0500] "GET /Shopping/css/login_register.css HTTP/1.1" 404 949 http-bio-9000-exec-4 25
-0:0:0:0:0:0:0:1 - - [17/Oct/2018:22:53:18 -0500] "GET /favicon.ico HTTP/1.1" 404 - http-bio-9000-exec-5 0

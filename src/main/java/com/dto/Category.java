@@ -28,7 +28,6 @@ public class Category {
 	private Integer categoryId;
 	@Column(name = "CATEGORY_NAME", nullable = false, unique = true)
 	private String categoryName;
-	@Column(name = "PARENT_ID", nullable = false)
+	@Column(name = "PARENT_ID")
 	private Integer parentId;
-
 }

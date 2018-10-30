@@ -1,7 +1,9 @@
 package com.dto;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "cartItem")
 @Table(name = "CARTITEM")
 @Getter
 @Setter
@@ -30,10 +32,10 @@ public class CartItem {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "CARTITEM_ID")
 	private Integer cartItemId;
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "USER_ID")
 	private User user;
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "PRODUCT_ID")
 	private Product product;
 	@Column(name = "AMOUNT", nullable = false)

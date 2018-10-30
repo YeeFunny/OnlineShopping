@@ -12,8 +12,7 @@ public interface OrderRepository {
 
 	public List<Order> getOrdersByUser(User user);
 
-	public int addOrder(Order order) throws DatabaseException;
+	public void addOrder(Order order) throws DatabaseException;
 	
 	public int updateOrder(Order order) throws DatabaseException;
-	
 }

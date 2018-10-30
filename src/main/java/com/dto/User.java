@@ -7,12 +7,19 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,18 +31,26 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@PrimaryKeyJoinColumn(name = "USER_ID")
-public class User extends Login{
-	
+@ToString(exclude = {"addresses", "cards"})
+@EqualsAndHashCode(exclude = {"addresses", "cards"})
+public class User{
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer userId;
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 	private String mobile;
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "USER_ID")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Card> cards = new ArrayList<>();
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "USER_ID")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<CartItem> cartItems = new ArrayList<>();
-
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "users")
+	@Fetch(value = FetchMode.SUBSELECT)
+	private List<Address> addresses = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+	@Fetch(value = FetchMode.SUBSELECT)
+	private List<Order> orders = new ArrayList<>();
 }

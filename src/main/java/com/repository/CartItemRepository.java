@@ -8,6 +8,8 @@ import com.exception.DatabaseException;
 
 public interface CartItemRepository {
 	
+	public int haveCartItem(CartItem cartItem);
+	
 	public CartItem getCartItemById(int cartItemId);
 	
 	public List<CartItem> getCartItemByUser(User user);
@@ -16,5 +18,7 @@ public interface CartItemRepository {
 	
 	public int updateCartItem(CartItem cartItem) throws DatabaseException;
 	
-	public int deleteCartItem(int cartItemId) throws DatabaseException;
+	public void deleteCartItemByUser(User user) throws DatabaseException;
+
+	public int deleteCartItemById(int cartItemId) throws DatabaseException;
 }

@@ -1,5 +1,6 @@
 package com.dto;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,8 +8,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,32 +26,34 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude={"user"})
 @EqualsAndHashCode
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Login {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "LOGIN_ID")
-	Integer loginId;
+	private Integer loginId;
 	@NotNull(groups = { LoginValidation.class, RegisterValidation.class }, message = "Email cannot be null")
 	@Email(message = "Email is invalid")
 	@Column(name = "EMAIL", unique = true, nullable = false)
-	String email;
+	private String email;
 	@NotNull(groups = { RegisterValidation.class }, message = "Name cannot be null")
 	@Size(groups = {
 			RegisterValidation.class }, min = 2, max = 200, message = "Name must be between 2 and 200 characters")
 	@Column(name = "NAME", nullable = false)
-	String name;
+	private String name;
 	@NotNull(groups = { LoginValidation.class, RegisterValidation.class }, message = "Password cannot be null")
 	@Size(groups = { LoginValidation.class,
 			RegisterValidation.class }, min = 6, message = "Password must be more than 6 characters")
 	@Column(name = "PASSWORD", nullable = false)
-	String password;
+	private String password;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ROLE", nullable = false)
-	UserRole role;
+	private UserRole role;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "USER_ID")
+	private User user;
 
 	public interface LoginValidation {
 	}
